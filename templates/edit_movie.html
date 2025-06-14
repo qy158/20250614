@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑电影 - {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">编辑文件: {{ movie.title }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="title">文件标题</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ movie.title }}" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="description">文件描述</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required>{{ movie.description }}</textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="director">创作者</label>
+                        <input type="text" class="form-control" id="director" name="director" value="{{ movie.director }}" required>
+                    </div>
+<!--                    <div class="form-group mb-3">-->
+<!--                        <label for="year">上映年份</label>-->
+<!--                        <input type="number" class="form-control" id="year" name="year" min="1900" max="{{ current_year }}" value="{{ movie.year }}" required>-->
+<!--                    </div>-->
+                    <div class="form-group mb-3">
+                        <label for="genre">文件类型</label>
+                        <select class="form-select" id="genre" name="genre" required>
+                            <option value="" {% if not movie.genre %}selected{% endif %}>请选择</option>
+                            <option value="应用" {% if movie.genre == '应用' %}selected{% endif %}>应用</option>
+                            <option value="视频" {% if movie.genre == '视频' %}selected{% endif %}>视频</option>
+                            <option value="图片" {% if movie.genre == '图片' %}selected{% endif %}>图片</option>
+                            <option value="其他" {% if movie.genre == '其他' %}selected{% endif %}>其他</option>
+<!--                            <option value="恐怖" {% if movie.genre == '恐怖' %}selected{% endif %}>恐怖</option>-->
+<!--                            <option value="悬疑" {% if movie.genre == '悬疑' %}selected{% endif %}>悬疑</option>-->
+<!--                            <option value="动画" {% if movie.genre == '动画' %}selected{% endif %}>动画</option>-->
+<!--                            <option value="纪录片" {% if movie.genre == '纪录片' %}selected{% endif %}>纪录片</option>-->
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cover_image">文件封面 (可选，留空则不更换)</label>
+                        <div class="mb-2">
+                            {% if movie.cover_image %}
+                            <img src="{{ url_for('static', filename='uploads/' + movie.cover_image) }}" alt="{{ movie.title }}" class="img-thumbnail" style="max-width: 200px;">
+                            {% else %}
+                            <div class="text-muted">当前没有封面图片</div>
+                            {% endif %}
+                        </div>
+                        <input type="file" class="form-control" id="cover_image" name="cover_image">
+                        <small class="form-text text-muted">推荐尺寸: 600x900，最大16MB</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="movie_file">文件压缩包 (可选，ZIP格式，留空则不更换)</label>
+                        <div class="mb-2">
+                            {% if movie.file_path %}
+                            <a href="{{ url_for('download_movie', movie_id=movie.id) }}" class="btn btn-sm btn-info">
+                                <i class="fa fa-download"></i> 下载当前文件资源
+                            </a>
+                            {% else %}
+                            <div class="text-muted">当前没有文件资源</div>
+                            {% endif %}
+                        </div>
+                        <input type="file" class="form-control" id="movie_file" name="movie_file">
+                        <small class="form-text text-muted">请上传ZIP格式压缩包，最大100MB</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">保存修改</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

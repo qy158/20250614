@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}上传文件{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">上传文件</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="title">文件标题</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="description">文件描述</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="director">创作者</label>
+                        <input type="text" class="form-control" id="director" name="director" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="year">时间</label>
+                        <input type="number" class="form-control" id="year" name="year" min="1900" max="{{ current_year }}" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="genre">文件类型</label>
+                        <select class="form-select" id="genre" name="genre" required>
+                            <option value="">请选择</option>
+                            <option value="应用">应用</option>
+                            <option value="视频">视频</option>
+                            <option value="图片">图片</option>
+                            <option value="其他">其他</option>
+<!--                            <option value="恐怖">恐怖</option>-->
+<!--                            <option value="悬疑">悬疑</option>-->
+<!--                            <option value="动画">动画</option>-->
+<!--                            <option value="纪录片">纪录片</option>-->
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cover_image">文件封面</label>
+                        <input type="file" class="form-control" id="cover_image" name="cover_image">
+                        <small class="form-text text-muted">推荐尺寸: 600x900，最大16MB</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="movie_file">压缩包文件 (ZIP格式)</label>
+                        <input type="file" class="form-control" id="movie_file" name="movie_file">
+                        <small class="form-text text-muted">请上传ZIP格式压缩包，最大100MB</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">上传</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

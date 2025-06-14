@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>文件详情</h3>
+            {% if current_user.is_authenticated and (current_user.id == movie.user_id or current_user.is_admin) %}
+            <a href="{{ url_for('edit_movie', movie_id=movie.id) }}" class="btn btn-warning">
+                <i class="fa fa-edit"></i> 编辑文件
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4">
+        <img src="{{ url_for('static', filename='uploads/' + (movie.cover_image or 'default-movie.jpg')) }}"
+             class="img-fluid rounded" alt="{{ movie.title }}">
+    </div>
+    <div class="col-md-8">
+        <h1 class="mb-3">{{ movie.title }}</h1>
+        <div class="rating mb-3">
+            {% for i in range(5) %}
+                {% if i < avg_rating|int %}
+                    <i class="fa fa-star rating-star"></i>
+                {% else %}
+                    <i class="fa fa-star-o"></i>
+                {% endif %}
+            {% endfor %}
+            <span class="ml-2 text-muted">平均评分: {{ avg_rating|round(1) }}</span>
+        </div>
+        <p class="text-muted">
+            <strong>创作者:</strong> {{ movie.director }} |
+<!--            <strong>年份:</strong> {{ movie.year }} | -->
+            <strong>类型:</strong> {{ movie.genre }} |
+            <strong>上传者:</strong> {{ movie.user.username }} |
+            <strong>上传日期:</strong> {{ movie.upload_date.strftime('%Y-%m-%d') }}
+        </p>
+        <p class="lead">{{ movie.description }}</p>
+
+        {% if movie.file_path %}
+        <div class="mt-4">
+            <a href="{{ url_for('download_movie', movie_id=movie.id) }}" class="btn btn-success">
+                <i class="fa fa-download"></i> 下载文件
+            </a>
+        </div>
+        {% else %}
+        <div class="mt-4 text-muted">
+            <i class="fa fa-info-circle"></i> 该文件暂无可下载的资源
+        </div>
+        {% endif %}
+
+        {% if current_user.is_authenticated %}
+        <div class="mt-4">
+            <form method="post" action="{{ url_for('rate_movie', movie_id=movie.id) }}" class="d-inline">
+                <div class="form-group">
+                    <label for="rating">给这个文件评分:</label>
+                    <select class="form-select" id="rating" name="rating" required>
+                        <option value="">请选择</option>
+                        <option value="1">1星</option>
+                        <option value="2">2星</option>
+                        <option value="3">3星</option>
+                        <option value="4">4星</option>
+                        <option value="5">5星</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">提交评分</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="mb-4">评论</h3>
+
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('add_comment', movie_id=movie.id) }}" class="mb-5">
+            <div class="form-group">
+                <label for="content">发表评论:</label>
+                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">发表</button>
+        </form>
+        {% else %}
+        <div class="alert alert-info">
+            <p>请 <a href="{{ url_for('login') }}">登录</a> 后发表评论</p>
+        </div>
+        {% endif %}
+
+        {% for comment in movie.comments %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <span><strong>{{ comment.user.username }}</strong></span>
+                    <span class="text-muted">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ comment.content }}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not movie.comments %}
+        <div class="alert alert-info">
+            <p>还没有评论，成为第一个评论的人吧！</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
