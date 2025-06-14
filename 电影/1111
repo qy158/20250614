@@ -1,3 +1,0 @@
-    with app.app_context():
-        db.drop_all()  # 删除所有表
-        db.create_all()  # 重新创建所有表
